@@ -11,8 +11,16 @@ function Scanner({ isScanning, setIsScanning }) {
   const [isScanned, setIsScanned] = useState(false)
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [scannedData, setScannedData] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [processingStep, setProcessingStep] = useState(0)
   const scannerRef = useRef(null)
   const html5QrCodeRef = useRef(null)
+
+  const processingMessages = [
+    'Verificando Producto',
+    'Inspeccionando Documentos',
+    'Identificando Intermediarios'
+  ]
 
   const startScanner = async () => {
     try {
@@ -50,9 +58,21 @@ function Scanner({ isScanning, setIsScanning }) {
         (decodedText) => {
           // QR detectado exitosamente
           setScannedData(decodedText)
-          setStatus('EN REGLA')
-          setIsScanned(true)
           stopScanner()
+          
+          // Iniciar proceso de verificación
+          setIsProcessing(true)
+          setProcessingStep(0)
+          
+          // Secuencia de mensajes
+          setTimeout(() => setProcessingStep(1), 1500)
+          setTimeout(() => setProcessingStep(2), 3000)
+          setTimeout(() => {
+            setProcessingStep(3)
+            setIsProcessing(false)
+            setStatus('EN REGLA')
+            setIsScanned(true)
+          }, 4500)
         },
         (errorMessage) => {
           // Error de escaneo (normal mientras busca QR)
@@ -98,6 +118,8 @@ function Scanner({ isScanning, setIsScanning }) {
     setStatus('ESPERANDO')
     setIsScanned(false)
     setScannedData('')
+    setIsProcessing(false)
+    setProcessingStep(0)
   }
 
   useEffect(() => {
@@ -177,7 +199,35 @@ function Scanner({ isScanning, setIsScanning }) {
               </motion.div>
             )}
 
-            {!isCameraActive && !isScanned && (
+            {isProcessing && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="processing-container"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="loading-spinner"
+                >
+                  <QrCode size={60} strokeWidth={1.5} />
+                </motion.div>
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={processingStep}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="processing-text"
+                  >
+                    {processingMessages[processingStep]}
+                  </motion.p>
+                </AnimatePresence>
+              </motion.div>
+            )}
+
+            {!isCameraActive && !isScanned && !isProcessing && (
               <motion.button
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
