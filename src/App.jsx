@@ -15,13 +15,38 @@ function App() {
 
   useEffect(() => {
     const video = document.getElementById('intro-video')
-    if (video) {
-      video.play().catch(err => {
-        console.log('Autoplay prevented:', err)
+    
+    // Timeout de seguridad: si después de 3 segundos el video no se reproduce, saltar al contenido
+    const timeout = setTimeout(() => {
+      if (!videoEnded) {
+        console.log('Video timeout, skipping to content')
         setVideoEnded(true)
         setShowContent(true)
-      })
+      }
+    }, 3000)
+    
+    if (video) {
+      // Intentar reproducir el video
+      const playPromise = video.play()
+      
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Video se reproduce correctamente
+            console.log('Video playing')
+            clearTimeout(timeout)
+          })
+          .catch(err => {
+            console.log('Autoplay prevented:', err)
+            // Si el autoplay falla (común en móviles), saltar directamente al contenido
+            clearTimeout(timeout)
+            setVideoEnded(true)
+            setShowContent(true)
+          })
+      }
     }
+    
+    return () => clearTimeout(timeout)
   }, [])
 
   const handleVideoEnd = () => {
@@ -45,7 +70,13 @@ function App() {
                 autoPlay
                 muted
                 playsInline
+                preload="auto"
                 onEnded={handleVideoEnd}
+                onError={() => {
+                  console.log('Video error, skipping to content')
+                  setVideoEnded(true)
+                  setShowContent(true)
+                }}
                 className="intro-video"
               >
                 <source src="/intro.mp4" type="video/mp4" />
