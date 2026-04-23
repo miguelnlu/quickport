@@ -15,12 +15,43 @@
   overflow: hidden;
 }
 
+.play-button {
+  position: absolute;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2rem 3rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.play-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.play-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
 .intro-video {
   width: 60vmin;
   height: 60vmin;
   object-fit: cover;
   border-radius: 50%;
   aspect-ratio: 1 / 1;
+  transition: opacity 0.5s ease;
 }
 
 .brand-splash {
