@@ -10,68 +10,33 @@ import './App.css'
 
 function App() {
   const [isScanning, setIsScanning] = useState(false)
-  const [videoEnded, setVideoEnded] = useState(false)
   const [showContent, setShowContent] = useState(false)
 
   useEffect(() => {
-    const video = document.getElementById('intro-video')
-    
-    if (video) {
-      // Asegurar que el video esté muted para permitir autoplay
-      video.muted = true
-      
-      // Intentar reproducir inmediatamente
-      const playVideo = () => {
-        video.play()
-          .then(() => console.log('Video playing'))
-          .catch(err => {
-            console.log('Play attempt failed:', err)
-            // Reintentar cada 100ms hasta que funcione
-            setTimeout(playVideo, 100)
-          })
-      }
-      
-      // Múltiples intentos de reproducción
-      playVideo()
-      
-      // Intentar cuando el video cargue
-      video.addEventListener('loadedmetadata', playVideo)
-      video.addEventListener('canplay', playVideo)
-      
-      return () => {
-        video.removeEventListener('loadedmetadata', playVideo)
-        video.removeEventListener('canplay', playVideo)
-      }
-    }
-  }, [])
+    // Mostrar el GIF por 3.33 segundos (duración del video original)
+    const timer = setTimeout(() => {
+      setShowContent(true)
+    }, 3330)
 
-  const handleVideoEnd = () => {
-    setVideoEnded(true)
-    setShowContent(true)
-  }
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <Router>
       <div className="app">
         <AnimatePresence>
-          {!videoEnded && (
+          {!showContent && (
             <motion.div
               initial={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 1 }}
               className="video-intro"
             >
-              <video
-                id="intro-video"
-                autoPlay
-                muted
-                playsInline
-                preload="auto"
-                onEnded={handleVideoEnd}
-                className="intro-video"
-              >
-                <source src="/intro.mp4" type="video/mp4" />
-              </video>
+              <img
+                src="/intro.gif"
+                alt="QuickPort Intro"
+                className="intro-gif"
+              />
             </motion.div>
           )}
         </AnimatePresence>
