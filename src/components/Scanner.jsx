@@ -154,6 +154,7 @@ function Scanner({ isScanning, setIsScanning }) {
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
               className="close-button-top"
               onClick={handleClose}
               whileHover={{ scale: 1.05 }}
@@ -163,9 +164,9 @@ function Scanner({ isScanning, setIsScanning }) {
             </motion.button>
 
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1, duration: 0.3 }}
               className="status-section"
             >
               <p className="status-label">STATUS</p>
@@ -173,17 +174,18 @@ function Scanner({ isScanning, setIsScanning }) {
                 animate={{
                   color: status === 'EN REGLA' ? '#4ade80' : '#ffffff'
                 }}
+                transition={{ duration: 0.3 }}
                 className="status-value"
               >
                 {status}
               </motion.div>
             </motion.div>
 
-            {!isCameraActive && !isScanned && (
+            {!isCameraActive && !isScanned && !isProcessing && (
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.3 }}
                 className="qr-icon-container"
               >
                 <QrCode size={120} strokeWidth={1.5} />
@@ -192,8 +194,9 @@ function Scanner({ isScanning, setIsScanning }) {
 
             {isCameraActive && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
                 className="camera-container"
               >
                 <div id="qr-reader" ref={scannerRef}></div>
@@ -202,8 +205,9 @@ function Scanner({ isScanning, setIsScanning }) {
 
             {isProcessing && (
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
                 className="processing-container"
               >
                 <motion.div
@@ -242,9 +246,9 @@ function Scanner({ isScanning, setIsScanning }) {
 
             {!isCameraActive && !isScanned && !isProcessing && (
               <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.3 }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={startScanner}
@@ -259,16 +263,18 @@ function Scanner({ isScanning, setIsScanning }) {
               {isScanned && (
                 <>
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                     className="success-icon"
                   >
                     <QrCode size={80} strokeWidth={1.5} />
                   </motion.div>
                   
                   <motion.button
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.1, duration: 0.3 }}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setShowModal(true)}
