@@ -61,18 +61,19 @@ function Scanner({ isScanning, setIsScanning }) {
           stopScanner()
           
           // Iniciar proceso de verificación
+          setStatus('VERIFICANDO')
           setIsProcessing(true)
           setProcessingStep(0)
           
-          // Secuencia de mensajes
-          setTimeout(() => setProcessingStep(1), 1500)
-          setTimeout(() => setProcessingStep(2), 3000)
+          // Secuencia de mensajes (2.5 segundos cada uno)
+          setTimeout(() => setProcessingStep(1), 2500)
+          setTimeout(() => setProcessingStep(2), 5000)
           setTimeout(() => {
             setProcessingStep(3)
             setIsProcessing(false)
             setStatus('EN REGLA')
             setIsScanned(true)
-          }, 4500)
+          }, 7500)
         },
         (errorMessage) => {
           // Error de escaneo (normal mientras busca QR)
@@ -207,10 +208,22 @@ function Scanner({ isScanning, setIsScanning }) {
               >
                 <motion.div
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
                   className="loading-spinner"
                 >
-                  <QrCode size={60} strokeWidth={1.5} />
+                  <svg width="60" height="60" viewBox="0 0 60 60">
+                    <circle
+                      cx="30"
+                      cy="30"
+                      r="25"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      strokeDasharray="120"
+                      strokeDashoffset="30"
+                      strokeLinecap="round"
+                    />
+                  </svg>
                 </motion.div>
                 <AnimatePresence mode="wait">
                   <motion.p
@@ -218,7 +231,7 @@ function Scanner({ isScanning, setIsScanning }) {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.4 }}
                     className="processing-text"
                   >
                     {processingMessages[processingStep]}
