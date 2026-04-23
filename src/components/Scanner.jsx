@@ -18,6 +18,22 @@ function Scanner({ isScanning, setIsScanning }) {
     try {
       setIsCameraActive(true)
       
+      // Primero verificar si el navegador soporta getUserMedia
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert("Tu navegador no soporta acceso a la cámara. Por favor, usa un navegador moderno como Chrome, Firefox o Safari.");
+        setIsCameraActive(false)
+        return;
+      }
+
+      // Solicitar permisos de cámara explícitamente
+      try {
+        await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+      } catch (permissionError) {
+        alert("Necesitamos acceso a tu cámara para escanear códigos QR. Por favor, permite el acceso cuando tu navegador lo solicite.");
+        setIsCameraActive(false)
+        return;
+      }
+      
       if (!html5QrCodeRef.current) {
         html5QrCodeRef.current = new Html5Qrcode("qr-reader")
       }
@@ -44,7 +60,23 @@ function Scanner({ isScanning, setIsScanning }) {
       )
     } catch (err) {
       console.error("Error al iniciar el escáner:", err)
-      alert("No se pudo acceder a la cámara. Por favor, verifica los permisos.")
+      let errorMessage = "No se pudo acceder a la cámara. ";
+      
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        errorMessage += "Por favor, permite el acceso a la cámara en la configuración de tu navegador.";
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        errorMessage += "No se encontró ninguna cámara en tu dispositivo.";
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        errorMessage += "La cámara está siendo usada por otra aplicación.";
+      } else if (err.name === 'OverconstrainedError') {
+        errorMessage += "No se encontró una cámara que cumpla con los requisitos.";
+      } else if (err.name === 'SecurityError') {
+        errorMessage += "El acceso a la cámara está bloqueado por razones de seguridad. Asegúrate de estar usando HTTPS.";
+      } else {
+        errorMessage += "Error desconocido: " + err.message;
+      }
+      
+      alert(errorMessage);
       setIsCameraActive(false)
     }
   }
