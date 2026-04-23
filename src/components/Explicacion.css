@@ -1,0 +1,96 @@
+.explicacion-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.explicacion-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.explicacion-title {
+  font-size: clamp(2rem, 4vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+}
+
+.explicacion-subtitle {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+  max-width: 600px;
+}
+
+.explicacion-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.explicacion-section {
+  padding: 2rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.explicacion-section:hover {
+  transform: translateY(-5px);
+}
+
+.section-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.75rem;
+}
+
+.section-description {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.video-container {
+  margin-top: 2rem;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+}
+
+.video-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .explicacion-section {
+    padding: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  .section-description {
+    font-size: 0.9rem;
+  }
+}
