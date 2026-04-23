@@ -12,15 +12,38 @@ function App() {
   const [isScanning, setIsScanning] = useState(false)
   const [videoEnded, setVideoEnded] = useState(false)
   const [showContent, setShowContent] = useState(false)
-  const [videoStarted, setVideoStarted] = useState(false)
 
-  const handleVideoStart = () => {
+  useEffect(() => {
     const video = document.getElementById('intro-video')
+    
     if (video) {
-      setVideoStarted(true)
-      video.play()
+      // Asegurar que el video esté muted para permitir autoplay
+      video.muted = true
+      
+      // Intentar reproducir inmediatamente
+      const playVideo = () => {
+        video.play()
+          .then(() => console.log('Video playing'))
+          .catch(err => {
+            console.log('Play attempt failed:', err)
+            // Reintentar cada 100ms hasta que funcione
+            setTimeout(playVideo, 100)
+          })
+      }
+      
+      // Múltiples intentos de reproducción
+      playVideo()
+      
+      // Intentar cuando el video cargue
+      video.addEventListener('loadedmetadata', playVideo)
+      video.addEventListener('canplay', playVideo)
+      
+      return () => {
+        video.removeEventListener('loadedmetadata', playVideo)
+        video.removeEventListener('canplay', playVideo)
+      }
     }
-  }
+  }, [])
 
   const handleVideoEnd = () => {
     setVideoEnded(true)
@@ -38,37 +61,14 @@ function App() {
               transition={{ duration: 1 }}
               className="video-intro"
             >
-              {!videoStarted && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleVideoStart}
-                  className="play-button"
-                >
-                  <motion.div
-                    animate={{ scale: [1, 1.1, 1] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                    className="play-icon"
-                  >
-                    ▶
-                  </motion.div>
-                  <span>Iniciar</span>
-                </motion.button>
-              )}
               <video
                 id="intro-video"
+                autoPlay
                 muted
                 playsInline
                 preload="auto"
                 onEnded={handleVideoEnd}
-                onError={() => {
-                  console.log('Video error, showing play button')
-                }}
                 className="intro-video"
-                style={{ opacity: videoStarted ? 1 : 0 }}
               >
                 <source src="/intro.mp4" type="video/mp4" />
               </video>
